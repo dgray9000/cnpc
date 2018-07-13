@@ -1,0 +1,102 @@
+<resources>
+    <string name="app_name">CNPC</string>
+
+    <!-- API related strings -->
+    <string name="baseCryptowatchApiUrl">https://api.cryptowat.ch</string>
+    <string name="baseImageUrl">https://s2.coinmarketcap.com/static/img/coins/64x64/</string>
+    <string name="assets">/assets</string>
+    <string name="pairs">/pairs</string>
+    <string name="exchanges">/exchanges</string>
+    <string name="markets">/markets</string>
+
+    <!-- some default text for UI elements -->
+    <string name="default_first_asset_button_text">Base</string>
+    <string name="default_second_asset_button_text">Quote</string>
+    <string name="default_exchange_text">Market</string>
+    <string name="update_interval">Update Interval</string>
+    <string name="done">Done</string>
+    <string name="delete">Delete</string>
+    <string name="settings">Settings</string>
+    <string name="symbol_content_description">Symbol for base of the trading pair.</string>
+
+    <string name="rva_update_interval_text">is updated every </string>
+    <string name="rva_exchange_text"> from </string>
+
+    <string-array name="parser_strings">
+        <item>result</item>
+        <item>allowance</item>
+        <item>id</item>
+        <item>exchange</item>
+        <item>pair</item>
+        <item>active</item>
+        <item>route</item>
+        <item>symbol</item>
+        <item>name</item>
+        <item>base</item>
+        <item>quote</item>
+        <item>fiat</item>
+    </string-array>
+
+    <string-array name="update_interval_choices">
+        <item>1 minute</item>
+        <item>5 minutes</item>
+        <item>10 minutes</item>
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+    </string-array>
+
+    <string name="title_activity_settings">Settings</string>
+    <string name="activity_assetChooser_label">Choose Asset Details</string>
+
+    <!-- Strings related to Settings -->
+    <string name="setting_section_notification">Notification</string>
+
+    <string name="setting_priority_title">Priority</string>
+    <string name="setting_lock_screen_title">Lock Screen</string>
+    <string name="setting_vibrate_title">Vibrate</string>
+    <string name="setting_ringtone_title">Ringtone</string>
+
+    <string name="pref_ringtone_silent">Silent</string>
+    <string name="pref_header_notification">Notifications</string>
+
+    <string name="setting_lock_screen_summary">Hide Notification on lock screen</string>
+    <string name="setting_vibrate_summary">Vibrate on each update</string>
+    <string name="setting_ringtone_summary">Notification sound every update</string>
+
+    <string name="setting_priority_summary">
+        Priority of notification
+        \n\t\tMin: Doesn\'t show the notification icon on status bar.
+        \n\t\tLow: Shows everywhere but not intrusive.
+        \n\t\tDefault: The systems default priority.
+        \n\t\t\High: Shows everywhere and makes noise
+    </string>
+
+    <string name="setting_priority_min">1</string>
+
+    <string-array name="pref_priority_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="pref_priority_options">
+        <item>Min</item>
+        <item>Low</item>
+        <item>Default</item>
+        <item>High</item>
+        <item>Max</item>
+    </string-array>
+
+    <!-- Preference Keys -->
+    <string name="key_notification_shared_preferences">notification_shared_preferences</string>
+    <string name="pref_notification_priority">pref_notification_priority</string>
+    <string name="pref_show_on_lock_screen">pref_show_on_lock_screen</string>
+    <string name="pref_vibrate">pref_vibrate</string>
+    <string name="pref_ringtone_enabled">pref_ringtone_enabled</string>
+    <string name="pref_ringtone">pref_ringtone</string>
+    <string name="channel_name">Prices</string>
+    <string name="channel_description">Background price updates</string>
+</resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+        <PreferenceCategory
+            android:title="@string/setting_section_notification" >
+
+                <CheckBoxPreference
+                    android:defaultValue="true"
+                    android:key="@string/pref_show_on_lock_screen"
+                    android:persistent="true"
+                    android:summary="@string/setting_lock_screen_summary"
+                    android:title="@string/setting_lock_screen_title"
+                    tools:textColor="@color/cardview_light_background" />
+
+                <ListPreference
+                    android:defaultValue="@string/setting_priority_min"
+                    android:entries="@array/pref_priority_options"
+                    android:entryValues="@array/pref_priority_values"
+                    android:key="@string/pref_notification_priority"
+                    android:persistent="true"
+                    android:summary="@string/setting_priority_summary"
+                    android:title="@string/setting_priority_title" />
+
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="@string/pref_vibrate"
+                    android:persistent="true"
+                    android:summary="@string/setting_vibrate_summary"
+                    android:title="@string/setting_vibrate_title" />
+
+                <CheckBoxPreference
+                    android:defaultValue="false"
+                    android:key="@string/pref_ringtone_enabled"
+                    android:persistent="true"
+                    android:textColor="@android:color/white"
+                    android:title="@string/setting_ringtone_title" />
+
+                <Preference
+                    android:defaultValue="content://settings/system/notification_sound"
+                    android:dependency="@string/pref_ringtone_enabled"
+                    android:key="@string/pref_ringtone"
+                    android:persistent="true"
+                    android:summary="@string/setting_ringtone_summary"
+                    android:textColor="@android:color/white" />
+        </PreferenceCategory>
+</PreferenceScreen>
