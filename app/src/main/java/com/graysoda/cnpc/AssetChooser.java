@@ -11,7 +11,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.graysoda.cnpc.Database.DataManager;
+import com.graysoda.cnpc.Database.DAO.DataManager;
+import com.graysoda.cnpc.Datum.AssetData;
+import com.graysoda.cnpc.Datum.MarketData;
+import com.graysoda.cnpc.Datum.NotificationData;
+import com.graysoda.cnpc.Datum.PairData;
 
 import org.json.JSONException;
 

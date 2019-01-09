@@ -7,6 +7,8 @@ import android.content.Intent;
 
 import java.util.Calendar;
 
+import static com.graysoda.cnpc.Constants.ID;
+
 /**
  * Created by david.grayson on 3/23/2018.
  */
@@ -29,7 +31,7 @@ class NotificationCreator {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null) {
             Intent notificationIntent = new Intent(context, NotificationPublisher.class);
-            notificationIntent.putExtra(NotificationPublisher.ID,id);
+            notificationIntent.putExtra(ID,id);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             alarmManager.setInexactRepeating(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis()+(1000),getUpdateDelay(updateInterval), pendingIntent);
         } else {
@@ -46,7 +48,7 @@ class NotificationCreator {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null){
             Intent notificationIntent = new Intent(context, NotificationPublisher.class);
-            notificationIntent.putExtra(NotificationPublisher.ID,id);
+            notificationIntent.putExtra(ID,id);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             alarmManager.cancel(pendingIntent);
         } else {

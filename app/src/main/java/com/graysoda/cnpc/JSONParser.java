@@ -1,28 +1,32 @@
 package com.graysoda.cnpc;
 
+import com.graysoda.cnpc.Datum.AssetData;
+import com.graysoda.cnpc.Datum.MarketData;
+import com.graysoda.cnpc.Datum.PairData;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static com.graysoda.cnpc.Constants.ACTIVE;
+import static com.graysoda.cnpc.Constants.ALLOWANCE;
+import static com.graysoda.cnpc.Constants.BASE;
+import static com.graysoda.cnpc.Constants.EXCHANGE;
+import static com.graysoda.cnpc.Constants.ID;
+import static com.graysoda.cnpc.Constants.NAME;
+import static com.graysoda.cnpc.Constants.PAIR;
+import static com.graysoda.cnpc.Constants.QUOTE;
+import static com.graysoda.cnpc.Constants.RESULT;
+import static com.graysoda.cnpc.Constants.ROUTE;
+import static com.graysoda.cnpc.Constants.SYMBOL;
+
 /**
  * Created by david.grayson on 3/23/2018.
  */
 
 class JSONParser {
-    private static final String RESULT = "result";
-    private static final String ALLOWANCE = "allowance";
-    private static final String SYMBOL = "symbol";
-    private static final String ID = "id";
-    private static final String BASE = "base";
-    private static final String QUOTE = "quote";
-    private static final String ROUTE = "route";
-    private static final String NAME = "name";
-    private static final String EXCHANGE = "exchange";
-    private static final String PAIR = "pair";
-    private static final String ACTIVE = "active";
-
     ArrayList<PairData> parsePairs (String s) throws JSONException {
         ArrayList<PairData> pairs = new ArrayList<>();
 
