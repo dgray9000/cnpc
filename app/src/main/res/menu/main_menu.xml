@@ -12,4 +12,9 @@
         android:icon="@drawable/ic_settings"
         android:title="@string/settings"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_log"
+        android:icon="@drawable/ic_log"
+        android:title="@string/main_menu_log"
+        app:showAsAction="ifRoom" />
 </menu>

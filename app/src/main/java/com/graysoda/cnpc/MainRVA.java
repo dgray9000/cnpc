@@ -14,8 +14,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.graysoda.cnpc.Database.DAO.DataManager;
-import com.graysoda.cnpc.Datum.NotificationData;
+import com.graysoda.cnpc.database.dao.DataManager;
+import com.graysoda.cnpc.datum.NotificationData;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class MainRVA extends RecyclerView.Adapter<MainRVA.ItemViewHolder> {
     private DataManager dm;
     private boolean areDeleting = false;
 
-    MainRVA(Context context){
+    public MainRVA(Context context){
         notifications = new ArrayList<>();
         markedForDeletion = new ArrayList<>();
         this.context = context;
@@ -58,7 +58,7 @@ public class MainRVA extends RecyclerView.Adapter<MainRVA.ItemViewHolder> {
 
         holder.textView.setText(text);
         holder.onOff.setChecked(notification.getIsOn());
-        Picasso.with(context).load(Constants.iconUrl+notification.getBaseSymbol()+".png").into(holder.symbol);
+        Picasso.get().load(Constants.iconUrl+notification.getBaseSymbol()+".png").into(holder.symbol);
 
         if (holder.onOff.isChecked()){
             new NotificationCreator().create(context, (int) notification.getId(),notification.getUpdateInterval());
@@ -95,23 +95,23 @@ public class MainRVA extends RecyclerView.Adapter<MainRVA.ItemViewHolder> {
         return notifications.size();
     }
 
-    void updateDataSet(){
+    public void updateDataSet(){
         notifications.clear();
         notifications.addAll(dm.getAllNotifications());
         notifyDataSetChanged();
     }
 
-    void activateDeleteOptions(){
+    public void activateDeleteOptions(){
         areDeleting = true;
         notifyDataSetChanged();
     }
 
-    void deactivateDeleteOptions(){
+    public void deactivateDeleteOptions(){
         areDeleting = false;
         notifyDataSetChanged();
     }
 
-    void delete(){
+    public void delete(){
         for (Integer i: markedForDeletion){
             if (dm.deleteNotification(notifications.get(i).getId())){
                 stopUpdates(notifications.get(i));

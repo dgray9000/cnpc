@@ -13,8 +13,8 @@ import static com.graysoda.cnpc.Constants.ID;
  * Created by david.grayson on 3/23/2018.
  */
 
-class NotificationCreator {
-    NotificationCreator(){}
+public class NotificationCreator {
+    public NotificationCreator(){}
 
     private Long getUpdateDelay(String updateInterval){
         switch (updateInterval){
@@ -27,7 +27,7 @@ class NotificationCreator {
         }
     }
 
-    void create(Context context,int id, String updateInterval){
+    public void create(Context context, int id, String updateInterval){
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null) {
             Intent notificationIntent = new Intent(context, NotificationPublisher.class);

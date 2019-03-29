@@ -6,8 +6,8 @@
     <string name="baseImageUrl">https://s2.coinmarketcap.com/static/img/coins/64x64/</string>
     <string name="assets">/assets</string>
     <string name="pairs">/pairs</string>
+    <string name="market">/market</string>
     <string name="exchanges">/exchanges</string>
-    <string name="markets">/markets</string>
 
     <!-- some default text for UI elements -->
     <string name="default_first_asset_button_text">Base</string>
@@ -26,7 +26,7 @@
         <item>result</item>
         <item>allowance</item>
         <item>id</item>
-        <item>exchange</item>
+        <item>name</item>
         <item>pair</item>
         <item>active</item>
         <item>route</item>
@@ -99,4 +99,7 @@
     <string name="pref_ringtone">pref_ringtone</string>
     <string name="channel_name">Prices</string>
     <string name="channel_description">Background price updates</string>
+    <string name="main_menu_log">Log</string>
+
+    <string name="asset_chooser_search_hint">Search by name or ticker symbol</string>
 </resources>
