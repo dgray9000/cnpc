@@ -1,16 +1,25 @@
 package com.graysoda.cnpc;
 
-import android.os.Environment;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-
-import java.io.File;
-import java.io.IOException;
-
-import de.mindpipe.android.logging.log4j.LogConfigurator;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 
 public final class Constants {
+	public static final String TAG = "CNPC";
+    public static final String BASE_CRYPTOWATCH_URL = "https://api.cryptowat.ch";
+    public static final String ASSETS_URL = BASE_CRYPTOWATCH_URL + "/assets";
+    public static final String MARKET_URL = BASE_CRYPTOWATCH_URL + "/market";
+    public static final String EXCHANGE_URL = BASE_CRYPTOWATCH_URL + "/exchanges";
+    public static final String PAIRS_URL = BASE_CRYPTOWATCH_URL + "/pairs";
+    public static final String[] UPDATE_INTERVAL_CHOICES = new String[]
+			{
+					"1 minute",
+					"5 minutes",
+					"10 minutes",
+					"15 minutes",
+					"30 minutes",
+					"1 hour"
+			};
     public static final String iconUrl = "https://raw.githubusercontent.com/atomiclabs/cryptocurrency-icons/master/32/icon/";
     public static final String RESULT = "result";
     public static final String ALLOWANCE = "allowance";
@@ -26,31 +35,16 @@ public final class Constants {
     public static final String channelId = "Prices";
     public static final String ACTION = "android.intent.action.BOOT_COMPLETED";
     public static final String REVISION = "revision";
+    public static final int PERMISSION_REQUEST_CODE = 87;
 
-    public static org.apache.log4j.Logger getLogger(Class clazz){
-
-        File logFile = new File(Environment.getExternalStorageDirectory().toString() + File.separator + "log/cnpc.log");
-
-        if (!logFile.exists()) {
-            try {
-                logFile.createNewFile();
-                logFile.setReadable(true);
-                logFile.setWritable(true);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        final LogConfigurator configurator = new LogConfigurator();
-        configurator.setFileName(Environment.getExternalStorageDirectory().toString() + File.separator + "log/cnpc.log");
-        configurator.setRootLevel(Level.ALL);
-        configurator.setLevel("org.apache",Level.ALL);
-        configurator.setUseFileAppender(true);
-        configurator.setFilePattern("%d %-5p [%c{2}]-[%L] %m%n");
-        configurator.setMaxFileSize(1024 * 1024);
-        configurator.setImmediateFlush(true);
-        configurator.configure();
-        Logger logger = Logger.getLogger(clazz);
-        return logger;
-    }
+    public static boolean hasPermissions(Context context, String... permissions){
+    	if (context != null && permissions != null){
+    		for (String s : permissions){
+    			if (ActivityCompat.checkSelfPermission(context, s) != PackageManager.PERMISSION_GRANTED){
+    				return false;
+				}
+			}
+		}
+		return true;
+	}
 }

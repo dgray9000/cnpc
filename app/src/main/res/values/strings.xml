@@ -1,13 +1,11 @@
 <resources>
     <string name="app_name">CNPC</string>
 
-    <!-- API related strings -->
-    <string name="baseCryptowatchApiUrl">https://api.cryptowat.ch</string>
-    <string name="baseImageUrl">https://s2.coinmarketcap.com/static/img/coins/64x64/</string>
-    <string name="assets">/assets</string>
-    <string name="pairs">/pairs</string>
-    <string name="market">/market</string>
-    <string name="exchanges">/exchanges</string>
+    <!-- Asset Chooser Dialog titles -->
+    <string name="choose_base_dialog_title">Select a Base</string>
+    <string name="choose_quote_dialog_title">Select a Quote</string>
+    <string name="choose_exchange_dialog_title">Select a Exchange</string>
+    <string name="choose_updateInterval_dialog_title">Select a Update Interval</string>
 
     <!-- some default text for UI elements -->
     <string name="default_first_asset_button_text">Base</string>
@@ -21,30 +19,6 @@
 
     <string name="rva_update_interval_text">is updated every </string>
     <string name="rva_exchange_text"> from </string>
-
-    <string-array name="parser_strings">
-        <item>result</item>
-        <item>allowance</item>
-        <item>id</item>
-        <item>name</item>
-        <item>pair</item>
-        <item>active</item>
-        <item>route</item>
-        <item>symbol</item>
-        <item>name</item>
-        <item>base</item>
-        <item>quote</item>
-        <item>fiat</item>
-    </string-array>
-
-    <string-array name="update_interval_choices">
-        <item>1 minute</item>
-        <item>5 minutes</item>
-        <item>10 minutes</item>
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-    </string-array>
 
     <string name="title_activity_settings">Settings</string>
     <string name="activity_assetChooser_label">Choose Asset Details</string>
@@ -102,4 +76,13 @@
     <string name="main_menu_log">Log</string>
 
     <string name="asset_chooser_search_hint">Search by name or ticker symbol</string>
+
+
+    <!-- Permission Rational -->
+    <string name="rational_title_internet">Internet Permission</string>
+    <string name="rational_msg_internet">This app needs to connect to the internet to function.</string>
+    <string name="rational_title_vibrate">Vibration Permission</string>
+    <string name="rational_msg_vibrate">Only needed if you want the phone to vibrate when updating the price notifications.</string>
+    <string name="rational_title_boot">Recieve Boot Complete</string>
+    <string name="rational_msg_boot">Needed for automatially restarting your notifications after the phone restarts.</string>
 </resources>

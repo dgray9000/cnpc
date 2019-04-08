@@ -14,7 +14,7 @@ public class ApiDAO {
 	}
 
 	public String getRevision(){
-		String revision = null;
+		String revision = "";
 		Cursor c = db.query(ApiModel.TABLE_NAME,null,null,null,null,null,null,null);
 
 		if (c != null && c.moveToFirst()){
@@ -29,7 +29,7 @@ public class ApiDAO {
 	}
 
 	boolean update(String revision){
-		db.delete(ApiModel.TABLE_NAME,ApiModel.COLUMN_REVISION+" NOT =?",new String[]{revision});
+		db.delete(ApiModel.TABLE_NAME,ApiModel.COLUMN_REVISION+" !=?",new String[]{revision});
 		return db.insert(ApiModel.TABLE_NAME, null, makeContentValues(revision)) > 0;
 	}
 

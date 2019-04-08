@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.graysoda.cnpc.Constants;
 import com.graysoda.cnpc.database.model.ExchangeModel;
 import com.graysoda.cnpc.datum.Exchange;
 
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 class ExchangeDAO {
-    private static final String TAG = "ExchangeDAO";
+    private static final String TAG = Constants.TAG + " ExchangeDAO:";
     private final SQLiteDatabase db;
     private final PairRouteDAO prDAO;
 
@@ -42,7 +43,7 @@ class ExchangeDAO {
         long id = db.insert(ExchangeModel.TABLE_NAME,
                 null,
                 makeContentValues(data));
-        Log.d(TAG,"id from insert = ["+id+"]");
+        Log.d(TAG,"id from insert = ["+id+"] for [" + data.getName() + "]");
         if (id != -1 && prDAO.insert(data.getPairRoute(),id)){
             return id;
         }

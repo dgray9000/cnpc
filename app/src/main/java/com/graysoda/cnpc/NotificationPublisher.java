@@ -13,14 +13,13 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.graysoda.cnpc.activities.MainActivity;
 import com.graysoda.cnpc.database.dao.DataManager;
 import com.graysoda.cnpc.datum.NotificationData;
-import com.squareup.picasso.Picasso;
 
-import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,7 +40,7 @@ import static com.graysoda.cnpc.Constants.channelId;
  */
 
 public class NotificationPublisher extends BroadcastReceiver{
-    private static final Logger logger = Constants.getLogger(NotificationPublisher.class);
+    private static final String TAG = Constants.TAG + " Publisher:";
     private NotificationCompat.Builder mBuilder;
     private NotificationManager notificationManager;
     private int priority;
@@ -56,24 +55,24 @@ public class NotificationPublisher extends BroadcastReceiver{
 
         //getting settings that apply to notifications
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        logger.trace("#onRecieve: sharedPrefs get int = " + sp.getString(context.getString(R.string.pref_notification_priority),"error"));
+        Log.v(TAG, "#onRecieve: sharedPrefs get int = " + sp.getString(context.getString(R.string.pref_notification_priority),"error"));
         priority = Integer.parseInt(sp.getString(context.getString(R.string.pref_notification_priority), String.valueOf(NotificationManagerCompat.IMPORTANCE_MIN)));
 
-        logger.trace("#onRecieve: showOnLockScreen = " + sp.getBoolean(context.getString(R.string.pref_show_on_lock_screen),false));
+        Log.v(TAG, "#onRecieve: showOnLockScreen = " + sp.getBoolean(context.getString(R.string.pref_show_on_lock_screen),false));
         showOnLockScreen = sp.getBoolean(context.getString(R.string.pref_show_on_lock_screen), true);
 
-        logger.trace("#onRecieve: vibrate = " + sp.getBoolean(context.getString(R.string.pref_vibrate),true));
+        Log.v(TAG, "#onRecieve: vibrate = " + sp.getBoolean(context.getString(R.string.pref_vibrate),true));
         vibrate = sp.getBoolean(context.getString(R.string.pref_vibrate),false);
 
-        logger.trace("#onRecieve: ringtoneEnabled = " + sp.getBoolean(context.getString(R.string.pref_ringtone_enabled),true));
+        Log.v(TAG, "#onRecieve: ringtoneEnabled = " + sp.getBoolean(context.getString(R.string.pref_ringtone_enabled),true));
         ringtoneEnabled = sp.getBoolean(context.getString(R.string.pref_ringtone_enabled),false);
 
-        logger.trace("#onRecieve: ringtone = " + sp.getString(context.getString(R.string.pref_ringtone),"error"));
+        Log.v(TAG, "#onRecieve: ringtone = " + sp.getString(context.getString(R.string.pref_ringtone),"error"));
         ringtone = sp.getString(context.getString(R.string.pref_ringtone),null);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if(notificationManager.getNotificationChannel(channelId) == null || !isNotificationChannelCorrect()){
-                logger.trace("#onRecieve: notification channel is not correct");
+                Log.v(TAG, "#onRecieve: notification channel is not correct");
                 createNotificationChannel(context.getString(R.string.channel_description));
             }
         }
@@ -137,21 +136,21 @@ public class NotificationPublisher extends BroadcastReceiver{
 
     private void createNotificationChannel(String description) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            logger.trace("#createNotificationChannel: Android is Oreo");
+            Log.v(TAG, "#createNotificationChannel: Android is Oreo");
             NotificationChannel channel = new NotificationChannel(channelId,"Price Updates",priority);
 
             channel.setDescription(description);
 
             if(ringtoneEnabled){
-                logger.trace("ringtone is enabled");
+                Log.v(TAG, "ringtone is enabled");
                 channel.setSound(Uri.parse(ringtone),channel.getAudioAttributes());
             } else {
-                logger.trace("ringtone not enabled");
+                Log.v(TAG, "ringtone not enabled");
                 channel.setSound(null, null);
             }
 
             if (vibrate){
-                logger.trace("vibrate enabled");
+                Log.v(TAG, "vibrate enabled");
                 channel.setVibrationPattern(vibratePattern);
             }
 
@@ -177,12 +176,12 @@ public class NotificationPublisher extends BroadcastReceiver{
                 " | %change: " + df.format(priceData.getChangePercentage()));
         mBuilder.setSmallIcon(R.drawable.ic_launcher_foreground);
 
-        try {
-            mBuilder.setLargeIcon(Picasso.get().load(Constants.iconUrl+priceData.getBaseSymbol()+".png").get());
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-            e.printStackTrace();
-        }
+//        try {
+//            mBuilder.setLargeIcon(Picasso.get().load(Constants.iconUrl+priceData.getBaseSymbol()+".png").get());
+//        } catch (IOException e) {
+//            Log.v(TAG, e.getMessage());
+//            e.printStackTrace();
+//        }
 
         mBuilder.setAutoCancel(false);
         mBuilder.setOngoing(true);
@@ -197,8 +196,8 @@ public class NotificationPublisher extends BroadcastReceiver{
             mBuilder.setSound(Uri.parse(ringtone));
 
         // intents to open the app when the notification is clicked on
-        Intent intent = new Intent(mBuilder.mContext,MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(mBuilder.mContext,105,intent,PendingIntent.FLAG_ONE_SHOT);
+        Intent intent = new Intent(MyApplication.get(),MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(MyApplication.get(),105,intent,PendingIntent.FLAG_ONE_SHOT);
 
         mBuilder.setContentIntent(pendingIntent);
 
@@ -235,7 +234,7 @@ public class NotificationPublisher extends BroadcastReceiver{
                         return parsePriceData(sb.toString(),strings);
                     }
                 } catch (IOException | JSONException e) {
-                    logger.error(e.getMessage());
+                    Log.d(TAG, e.getMessage());
                     e.printStackTrace();
                 }
             return null;

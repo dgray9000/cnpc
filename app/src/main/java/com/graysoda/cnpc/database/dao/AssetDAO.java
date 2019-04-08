@@ -3,13 +3,17 @@ package com.graysoda.cnpc.database.dao;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
+import com.graysoda.cnpc.Constants;
 import com.graysoda.cnpc.database.model.AssetModel;
+import com.graysoda.cnpc.database.model.PairDataModel;
 import com.graysoda.cnpc.datum.Asset;
 
 import java.util.ArrayList;
 
 public class AssetDAO {
+	private static final String TAG = Constants.TAG + " AssetDAO: ";
     private final SQLiteDatabase db;
 
     AssetDAO(SQLiteDatabase db){this.db = db;}
@@ -57,6 +61,8 @@ public class AssetDAO {
         String symbol = c.getString(1);
         String name = c.getString(2);
 
+		Log.v(TAG, "#buildAsset: id=[" + id + "], symbol=[" + symbol + "], name=[" + name + "]");
+
         return new Asset(id,symbol,name);
     }
 
@@ -68,6 +74,66 @@ public class AssetDAO {
 			do {
 				assets.add(this.buildAsset(c));
 			} while (c.moveToNext());
+		}
+
+		if (c != null && !c.isClosed()){
+			c.close();
+		}
+
+		return assets;
+	}
+
+	ArrayList<Asset> getBases(){
+		ArrayList<Asset> assets = new ArrayList<>();
+		String query = "SELECT * FROM " + AssetModel.TABLE_NAME + " c WHERE c." + AssetModel.COLUMN_ID + " IN(" +
+				"SELECT DISTINCT " + AssetModel.COLUMN_ID + " FROM "
+				+ AssetModel.TABLE_NAME
+				+ " a INNER JOIN "
+				+ PairDataModel.TABLE_NAME
+				+ " b ON a."
+				+ AssetModel.COLUMN_ID
+				+ "=b."
+				+ PairDataModel.COLUMN_BASE + ")";
+
+		Cursor c = db.rawQuery(query, null);
+
+		if (c != null && c.moveToFirst()){
+			do {
+				Asset asset = buildAsset(c);
+				if (asset != null){
+					assets.add(asset);
+				}
+			}while (c.moveToNext());
+		}
+
+		if (c != null && !c.isClosed()){
+			c.close();
+		}
+
+		return assets;
+	}
+
+	ArrayList<Asset> getQuotes() {
+		ArrayList<Asset> assets = new ArrayList<>();
+		String query = "SELECT * FROM " + AssetModel.TABLE_NAME + " c WHERE c." + AssetModel.COLUMN_ID + " IN(" +
+				"SELECT DISTINCT " + AssetModel.COLUMN_ID + " FROM "
+				+ AssetModel.TABLE_NAME
+				+ " a INNER JOIN "
+				+ PairDataModel.TABLE_NAME
+				+ " b ON a."
+				+ AssetModel.COLUMN_ID
+				+ "=b."
+				+ PairDataModel.COLUMN_QUOTE + ")";
+
+		Cursor c = db.rawQuery(query, null);
+
+		if (c != null && c.moveToFirst()){
+			do {
+				Asset asset = buildAsset(c);
+				if (asset != null){
+					assets.add(asset);
+				}
+			}while (c.moveToNext());
 		}
 
 		if (c != null && !c.isClosed()){

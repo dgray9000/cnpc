@@ -122,4 +122,12 @@ public class DataManager {
 	public Pair getPairByAssets(Asset chosenBase, Asset chosenQuote, Exchange chosenExchange) {
 		return pairDAO.getPairByAssets(chosenBase, chosenQuote, chosenExchange);
 	}
+
+	public ArrayList<Asset> getBases(){
+		return assetDAO.getBases();
+	}
+
+	public ArrayList<Asset> getQuotes(){
+		return assetDAO.getQuotes();
+	}
 }

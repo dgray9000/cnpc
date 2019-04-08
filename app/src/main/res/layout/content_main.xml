@@ -18,9 +18,9 @@
         android:layout_alignBottom="@+id/rv"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
         android:clickable="true"
         android:fitsSystemWindows="true"
         android:focusable="true"
@@ -28,7 +28,7 @@
         app:elevation="1dp"
         app:fabSize="normal"
         app:rippleColor="@color/cardview_dark_background"
-        app:srcCompat="@drawable/ic_fab_add" />
+        app:srcCompat="@mipmap/ic_fab_add_round" />
 
     <LinearLayout
         android:id="@+id/linearLayout_main"

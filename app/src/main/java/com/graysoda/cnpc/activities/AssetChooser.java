@@ -3,16 +3,18 @@ package com.graysoda.cnpc.activities;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.graysoda.cnpc.Constants;
-import com.graysoda.cnpc.DialogRVA;
 import com.graysoda.cnpc.NotificationCreator;
 import com.graysoda.cnpc.R;
 import com.graysoda.cnpc.database.dao.DataManager;
@@ -21,22 +23,20 @@ import com.graysoda.cnpc.datum.Exchange;
 import com.graysoda.cnpc.datum.NotificationData;
 import com.graysoda.cnpc.datum.Pair;
 
-import org.apache.log4j.Logger;
-
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Created by david.grayson on 3/23/2018.
  */
 
 public class AssetChooser extends AppCompatActivity implements View.OnClickListener{
-    private static final Logger logger = Constants.getLogger(AssetChooser.class);
-    private DataManager dm;
-    private static Asset chosenBase, chosenQuote;
+	private static final String TAG = Constants.TAG + " AssetChooser: ";
+    private static DataManager dm;
+    private Asset chosenBase, chosenQuote;
     private Pair chosenPair;
-    private static Exchange chosenExchange;
-    private static String updateInterval;
+    private Exchange chosenExchange;
+    private String updateInterval;
+    private Button base, quote, exchange, update;
 
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,53 +44,178 @@ public class AssetChooser extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_asset_chooser);
 
         dm = new DataManager(this);
+        base = findViewById(R.id.assetChooser_button_base);
+        quote = findViewById(R.id.assetChooser_button_quote);
+        exchange = findViewById(R.id.assetChooser_button_exchange);
+        update = findViewById(R.id.assetChooser_button_updateInterval);
     }
 
     @Override
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.assetChooser_button_done:
-                logger.debug("done button clicked");
+                Log.d(TAG, "done button clicked");
                 if (chosenPair == null && chosenQuote != null && chosenBase != null && chosenExchange != null){
 					chosenPair = dm.getPairByAssets(chosenBase, chosenQuote, chosenExchange);
+
+					if (chosenPair != null){
+						makeNotification(new NotificationData(updateInterval, chosenExchange, chosenPair));
+						finish();
+					} else {
+						Toast.makeText(this, "chosenPair is null", Toast.LENGTH_SHORT).show();
+					}
+
 				} else if (chosenPair != null && chosenExchange != null && updateInterval != null) {
 					makeNotification(new NotificationData(updateInterval, chosenExchange, chosenPair));
+					finish();
 				}
                 else {
-					new AlertDialog.Builder(getApplicationContext())
-							.setTitle("Error")
-							.setMessage("It appears you haven't selected some stuff, please do or hit the Cancel button at the bottom.")
-							.setCancelable(true)
-							.create().show();
-					finish();
+					Toast.makeText(this, "It appears you haven't selected some stuff, please do or hit the Cancel button at the bottom.", Toast.LENGTH_LONG).show();
 				}
                 break;
             case R.id.assetChooser_button_cancel:
-                logger.debug("cancel button clicked");
-                finish();
+				Log.d(TAG,"cancel button clicked");
+				finish();
                 break;
             case R.id.assetChooser_button_base:
-                logger.debug("base button clicked");
-                makeSingleChoiceDialog(getBaseList(),0);
+				Log.d(TAG,"base button clicked");
+				makeAssetDialog(dm.getBases(), getString(R.string.choose_base_dialog_title), 0);
                 break;
             case R.id.assetChooser_button_quote:
-                logger.debug("quote button clicked");
-                makeSingleChoiceDialog(getQuoteList(),1);
+				Log.d(TAG,"quote button clicked");
+				makeAssetDialog(getQuoteList(), getString(R.string.choose_quote_dialog_title), 1);
                 break;
             case R.id.assetChooser_button_exchange:
-                logger.debug("exchange button clicked");
-                makeSingleChoiceDialog(getExchangeList(),2);
+				Log.d(TAG,"exchange button clicked");
+				makeExchangeDialog(getExchangeList(), getString(R.string.choose_exchange_dialog_title));
                 break;
             case R.id.assetChooser_button_updateInterval:
-                logger.debug("update interval button clicked");
-                ArrayList<String> updateIntervalChoices = new ArrayList<>();
-                if(Collections.addAll(updateIntervalChoices, getResources().getStringArray(R.array.update_interval_choices)))
-                    makeSingleChoiceDialog(updateIntervalChoices,3);
+				Log.d(TAG,"update interval button clicked");
+				makeUpdateIntervalDialog();
                 break;
 
             default: break;
         }
     }
+
+	private void makeUpdateIntervalDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_selectable_list_item);
+
+		stringArrayAdapter.addAll(Constants.UPDATE_INTERVAL_CHOICES);
+
+		builder.setTitle(R.string.choose_updateInterval_dialog_title);
+		builder.setAdapter(stringArrayAdapter, (dialog, which) -> setChosen(stringArrayAdapter.getItem(which),3));
+
+		builder.create().show();
+	}
+
+	private void makeExchangeDialog(ArrayList<Exchange> exchangeList, String title) {
+		ArrayList<Exchange> filteredList = new ArrayList<>(exchangeList);
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		View dialogTitle = this.getLayoutInflater().inflate(R.layout.dialog_title, null);
+		EditText search = dialogTitle.findViewById(R.id.dialog_search_bar);
+		ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(this,android.R.layout.select_dialog_item,convertExchangeToStringArray(filteredList));
+
+		((TextView)dialogTitle.findViewById(R.id.custom_dialog_title)).setText(title); //sets the custom dialog title
+
+		builder.setCustomTitle(dialogTitle);
+		builder.setAdapter(stringArrayAdapter, (dialog, which) -> setChosen(filteredList.get(which), 2));
+
+		AlertDialog dialog = builder.show();
+
+		// these 3 lines allow the dialog to resize and the
+		// keyboard to work for search functionality
+		dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+		dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+		dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+		search.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable filter) {
+				filteredList.clear();
+				stringArrayAdapter.clear();
+
+				if (filter.toString().isEmpty()){
+					filteredList.addAll(exchangeList);
+				} else {
+					for (Exchange exchange : exchangeList){
+						if (exchange.getName().toLowerCase().contains(filter.toString().toLowerCase())){
+							filteredList.add(exchange);
+						}
+					}
+				}
+
+				stringArrayAdapter.addAll(convertExchangeToStringArray(filteredList));
+				stringArrayAdapter.notifyDataSetChanged();
+			}
+		});
+	}
+
+	private void makeAssetDialog(ArrayList<Asset> assetList, String title, int button) {
+		ArrayList<Asset> filteredList = new ArrayList<>(assetList);
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		View dialogTitle = this.getLayoutInflater().inflate(R.layout.dialog_title, null);
+		EditText search = dialogTitle.findViewById(R.id.dialog_search_bar);
+		ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(this,android.R.layout.select_dialog_item,convertAssetToStringArray(filteredList));
+
+		Log.d("demo", "adapter count = " + stringArrayAdapter.getCount());
+
+		((TextView)dialogTitle.findViewById(R.id.custom_dialog_title)).setText(title); //sets the custom dialog title
+
+		builder.setCustomTitle(dialogTitle);
+		builder.setAdapter(stringArrayAdapter, (dialog, which) -> setChosen(filteredList.get(which), button));
+
+		AlertDialog dialog = builder.show();
+
+		// these 3 lines allow the dialog to resize and the
+		// keyboard to work for search functionality
+		dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+		dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+		dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+		search.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable filter) {
+				filteredList.clear();
+				stringArrayAdapter.clear();
+
+				if (filter.toString().isEmpty()){
+					filteredList.addAll(assetList);
+				} else {
+					for (Asset asset : assetList){
+						String s = asset.getSymbol() + " - " + asset.getName();
+						if (s.toLowerCase().contains(filter.toString().toLowerCase())){
+							filteredList.add(asset);
+						}
+					}
+				}
+
+				stringArrayAdapter.addAll(convertAssetToStringArray(filteredList));
+				stringArrayAdapter.notifyDataSetChanged();
+			}
+		});
+	}
 
 	private ArrayList<Exchange> getExchangeList() {
 		ArrayList<Exchange> exchanges = new ArrayList<>();
@@ -105,97 +230,64 @@ public class AssetChooser extends AppCompatActivity implements View.OnClickListe
 	}
 
 	private ArrayList<Asset> getQuoteList() {
-		ArrayList<Asset> quotes = new ArrayList<>();
+		ArrayList<Asset> unfilteredList = dm.getQuotes();
 
-		for(Pair pair : dm.getAllPairs()){
-			if (!quotes.contains(pair.getQuote())){
-				quotes.add(pair.getQuote());
-			}
+		if (chosenExchange != null){
+
 		}
 
-		return quotes;
-	}
-
-	private ArrayList<Asset> getBaseList() {
-    	ArrayList<Asset> bases = new ArrayList<>();
-
-    	for(Pair pair : dm.getAllPairs()){
-    		if (!bases.contains(pair.getBase())){
-    			bases.add(pair.getBase());
-			}
-		}
-
-		return bases;
+		return unfilteredList;
 	}
 
 	private void makeNotification(NotificationData data) {
         new NotificationCreator().create(getApplicationContext(), (int) new DataManager(getApplicationContext()).insertNotification(data), updateInterval);
     }
 
-    private void makeSingleChoiceDialog(ArrayList data, final int button){
-        Log.d("makeSingleChoiceDialog","start");
-        //button 0=base 1=quote 2=exchange 3=updateInterval
-        String title;
+	private ArrayList<String> convertExchangeToStringArray(ArrayList<Exchange> exchangeList) {
+		ArrayList<String> strings = new ArrayList<>();
 
-        switch(button){
-            case 0: title = "Choose the base";
-                    break;
-            case 1: title = "Choose the quote";
-                    break;
-            case 2: title = "Choose the exchange";
-                    break;
-            case 3: title = "Choose the update interval";
-                    break;
-            default: title = "Error, this should not happen!";
-        }
+		for (Exchange exchange : exchangeList){
+			String s = exchange.getName();
+			strings.add(s);
+		}
 
-        logger.debug("title set to [" + title + "]");
+		return strings;
+	}
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		View dialogBody = this.getLayoutInflater().inflate(R.layout.dialog_body, null);
+	private ArrayList<String> convertAssetToStringArray(ArrayList<Asset> assets) {
+		ArrayList<String> strings = new ArrayList<>();
+		String s;
+		Asset asset;
 
-		RecyclerView dialogRV = dialogBody.findViewById(R.id.dialog_recyclerView);
-		EditText search = dialogBody.findViewById(R.id.dialog_search_bar);
+		for (int i=0; i<assets.size(); i++){
+			asset = assets.get(i);
+			s = asset.getSymbol().toUpperCase() + " - " + asset.getName();
+			strings.add(s);
+		}
 
-        DialogRVA dialogRVA = new DialogRVA(data, button);
+		return strings;
+	}
 
-        dialogRV.setAdapter(dialogRVA);
-        dialogRV.setLayoutManager(new LinearLayoutManager(this));
+	public void setChosen(Object obj, int button) {
+		String buttonText;
 
-		builder.setTitle(title);
-		builder.setView(dialogBody);
-		builder.create().show();
-
-		search.addTextChangedListener(new TextWatcher() {
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-			}
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-				dialogRVA.filter(s.toString());
-			}
-		});
-    }
-
-	public static void setChosen(Object obj, int button) {
 		//button 0=base 1=quote 2=exchange 3=updateInterval
 		if (obj instanceof Asset){
+			buttonText = ((Asset) obj).getSymbol().toUpperCase() + " - " + ((Asset) obj).getName();
 			if (button == 0){
 				chosenBase = (Asset) obj;
+				base.setText(buttonText);
 			} else if (button == 1){
 				chosenQuote = (Asset) obj;
+				quote.setText(buttonText);
 			}
 		} else if (obj instanceof Exchange){
 			chosenExchange = (Exchange) obj;
+			buttonText = ((Exchange) obj).getName();
+			exchange.setText(buttonText);
 		} else if (obj instanceof String){
 			updateInterval = (String) obj;
+			update.setText(updateInterval);
 		}
 	}
 }

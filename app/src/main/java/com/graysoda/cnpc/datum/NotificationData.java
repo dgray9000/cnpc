@@ -11,15 +11,6 @@ public class NotificationData {
     private String route, updateInterval, exchange, pairSymbol, quoteSymbol, baseSymbol;
     private boolean isOn = true;
 
-    public NotificationData() {
-        this.priceLast = -1;
-        this.priceHigh = -1;
-        this.priceLow = -1;
-        this.changeAbsolute = -1;
-        this.changePercentage = -1;
-        this.volume = -1;
-    }
-
     public NotificationData(long id, String pairSymbol,String baseSymbol, String quoteSymbol, String exchange, String route, String updateInterval, int isOn){
         this.id = id;
         this.pairSymbol = pairSymbol;

@@ -18,7 +18,7 @@ public class ApiModel {
 		}
 	}
 
-	static void onUgrade(SQLiteDatabase db, int oldVersion, int newVersion){
+	static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME + ";");
 		onCreate(db);
 	}

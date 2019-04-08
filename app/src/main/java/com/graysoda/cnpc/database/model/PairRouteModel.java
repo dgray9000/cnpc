@@ -15,7 +15,7 @@ public class PairRouteModel {
         sb.append(COLUMN_SYMBOL + " TEXT NOT NULL, ");
         sb.append(COLUMN_ROUTE + " TEXT NOT NULL, ");
         sb.append(COLUMN_MARKET + " INTEGER, ");
-        sb.append("FOREIGN KEY("+COLUMN_MARKET+") REFERENCES "+ ExchangeModel.TABLE_NAME+"("+ ExchangeModel.COLUMN_ID+")");
+        sb.append("FOREIGN KEY("+COLUMN_MARKET+") REFERENCES "+ ExchangeModel.TABLE_NAME + "("+ ExchangeModel.COLUMN_ID + ")");
         sb.append(");");
         try {
             db.execSQL(sb.toString());

@@ -38,6 +38,6 @@ public class DBOpenHelper extends SQLiteOpenHelper{
         PairDataModel.onUpgrade(sqLiteDatabase, oldVersion, newVersion);
         ExchangeModel.onUpgrade(sqLiteDatabase, oldVersion, newVersion);
         PairRouteModel.onUpgrade(sqLiteDatabase, oldVersion, newVersion);
-        ApiModel.onUgrade(sqLiteDatabase, oldVersion, newVersion);
+        ApiModel.onUpgrade(sqLiteDatabase, oldVersion, newVersion);
     }
 }

@@ -5,12 +5,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.graysoda.cnpc.Constants;
 import com.graysoda.cnpc.database.model.PairRouteModel;
 
 import java.util.HashMap;
 
 class PairRouteDAO {
-    private static final String TAG = "PairRouteDAO";
+    private static final String TAG = Constants.TAG + " PairRouteDAO";
     private final SQLiteDatabase db;
 
     PairRouteDAO(SQLiteDatabase db) {
@@ -26,6 +27,7 @@ class PairRouteDAO {
                 null,
                 null,
                 null);
+
         if (c!=null && c.moveToFirst()){
             do {
                 pairRouteMap.put(c.getString(0),c.getString(1));
@@ -34,6 +36,8 @@ class PairRouteDAO {
 
         if (c!=null && !c.isClosed())
             c.close();
+
+        Log.d(TAG, "[" + pairRouteMap.size() + "] routes returned for id [" + id + "]");
 
         return pairRouteMap;
     }
@@ -46,12 +50,12 @@ class PairRouteDAO {
 
     boolean insert(HashMap<String,String> pairRoute, long market){
         for (String s : pairRoute.keySet()) {
-            Log.d(TAG,"inserting ["+s+"]");
+            Log.v(TAG,"inserting ["+s+"]");
 
             if (!insertSingle(s,pairRoute.get(s),market))
                 return false;
 
-            Log.d(TAG,"["+s+"] inserted successfully");
+            Log.v(TAG,"["+s+"] inserted successfully");
         }
         return true;
     }

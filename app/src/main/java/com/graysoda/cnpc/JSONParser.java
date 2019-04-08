@@ -1,6 +1,6 @@
 package com.graysoda.cnpc;
 
-import android.content.res.Resources;
+import android.util.Log;
 
 import com.graysoda.cnpc.datum.Asset;
 import com.graysoda.cnpc.datum.Exchange;
@@ -37,6 +37,8 @@ import static com.graysoda.cnpc.Constants.SYMBOL;
  */
 
 public class JSONParser {
+	private static final String TAG = Constants.TAG + " JSONParser:";
+
     public ArrayList<Pair> parsePairs(String s) throws JSONException {
         ArrayList<Pair> pairs = new ArrayList<>();
 
@@ -108,7 +110,8 @@ public class JSONParser {
 		HashMap<String, String> pairsAndRoutes = new HashMap<>();
 
     	try{
-			URL url = new URL(Resources.getSystem().getString(R.string.baseCryptowatchApiUrl) + Resources.getSystem().getString(R.string.market) + "s/" + name);
+			URL url = new URL(Constants.MARKET_URL + "s/" + exchange.getString(SYMBOL));
+			Log.d(TAG, "url = [" + url.toString() + "]");
 			HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 
 			int statusCode = connection.getResponseCode();
@@ -123,8 +126,12 @@ public class JSONParser {
 					line = reader.readLine();
 				}
 
+				Log.d(TAG, "routes for [" + name + "]");
+
 				pairsAndRoutes = parseMarketResponse(sb.toString());
 			}
+
+			connection.disconnect();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -140,6 +147,8 @@ public class JSONParser {
 		JSONObject root = new JSONObject(s);
 		JSONArray result = root.getJSONArray(RESULT);
 		JSONObject allowance = root.getJSONObject(ALLOWANCE);
+
+		Log.d(TAG, result.toString());
 
 		for (int i = 0; i < result.length(); i++) {
 			JSONObject jsonObject = result.getJSONObject(i);

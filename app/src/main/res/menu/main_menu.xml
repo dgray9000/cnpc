@@ -4,17 +4,12 @@
 
     <item
         android:id="@+id/menu_delete"
-        android:icon="@drawable/ic_delete"
+        android:icon="@mipmap/ic_delete"
         android:title="@string/delete"
         app:showAsAction="always" />
     <item
         android:id="@+id/menu_settings"
-        android:icon="@drawable/ic_settings"
+        android:icon="@mipmap/ic_settings"
         android:title="@string/settings"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/menu_log"
-        android:icon="@drawable/ic_log"
-        android:title="@string/main_menu_log"
         app:showAsAction="ifRoom" />
 </menu>
